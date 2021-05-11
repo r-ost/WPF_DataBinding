@@ -1,0 +1,175 @@
+﻿<Window x:Class="Binding.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Binding"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="600"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
+
+    <Window.Resources>
+        <Style x:Key="BoldItalicLabel" TargetType="{x:Type TextBlock}">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontStyle" Value="Italic"/>
+        </Style>
+
+        <local:ToKgConverter x:Key="ToKgConverter"/>
+        <local:ToArrivalTimeConverter x:Key="ArrivalTimeConverter"/>
+    </Window.Resources>
+
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="4*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+
+        <GroupBox Header="Planes List">
+
+            <ListView x:Name="PlanesListView" ItemsSource="{Binding }">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="{x:Null}">
+                            <TextBlock Text="{Binding Brand }" TextAlignment="Center"
+                                       Style="{StaticResource BoldItalicLabel}"/>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </GroupBox>
+
+        <StackPanel Grid.Column="1">
+            <Grid Height="150">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="2*"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <GroupBox Header="Model Name">
+                    <TextBlock Text="{Binding  ElementName=PlanesListView, Path=SelectedItem.Brand }" TextAlignment="Center"/>
+                </GroupBox>
+
+                <GroupBox Grid.Column="1" Header="Registration Number">
+                    <TextBlock Text="{Binding  ElementName=PlanesListView, Path=SelectedItem.Registration }" TextAlignment="Center"/>
+                </GroupBox>
+
+                <GroupBox Grid.Column="0" Grid.Row="1" Header="Model Capacity [PPL]">
+                    <TextBlock Text="{Binding  ElementName=PlanesListView, Path=SelectedItem.Capacity }" TextAlignment="Center"/>
+                </GroupBox>
+
+                <GroupBox Grid.Column="1" Grid.Row="1" Header="Weight [KGs]">
+                    <TextBlock Text="{Binding  ElementName=PlanesListView, Path=SelectedItem.Weight, Converter={StaticResource ToKgConverter} }" TextAlignment="Center"/>
+                </GroupBox>
+
+                <GroupBox Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Header="Flying List">
+                    <ListView ItemsSource="{Binding ElementName=PlanesListView, Path=SelectedItem.Flights }"
+                              x:Name="FlyingListView" Height="50">
+
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="VerticalAlignment" Value="Stretch" />
+                                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Height="40">
+                                    <TextBlock Text="{Binding Number}" Style="{StaticResource BoldItalicLabel}"  VerticalAlignment="Center"
+                                              ></TextBlock>
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+
+
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+                    </ListView>
+
+
+
+                </GroupBox>
+
+            </Grid>
+
+
+            <Grid Height="160" Margin="0,0,0.2,0">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Grid Grid.Column="0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <GroupBox Header="Origin Airport">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Text="{Binding ElementName=FlyingListView, Path=SelectedItem.Origin}" Style="{StaticResource BoldItalicLabel}"></TextBlock>
+                        </GroupBox>
+                        <GroupBox Grid.Row="1" Header="Destination Airport">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       Text="{Binding ElementName=FlyingListView, Path=SelectedItem.Destination}" Style="{StaticResource BoldItalicLabel}"></TextBlock>
+                        </GroupBox>
+                    </Grid>
+
+
+                </Grid>
+                <Grid Grid.Column="1">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <GroupBox Header="Departure Time">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       Text="{Binding ElementName=FlyingListView, Path=SelectedItem.DepartureTime}"></TextBlock>
+                        </GroupBox>
+                        <GroupBox Grid.Row="1" Header="Duration">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       Text="{Binding ElementName=FlyingListView, Path=SelectedItem.Duration}"></TextBlock>
+                        </GroupBox>
+
+                        <GroupBox Grid.Row="2" Header="Arrival Time">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock.Text>
+                                    <MultiBinding Converter="{StaticResource ArrivalTimeConverter}" Mode="OneWay">
+
+                                        <Binding ElementName="FlyingListView" Path="SelectedItem.DepartureTime" UpdateSourceTrigger="PropertyChanged"/>
+                                        <Binding ElementName="FlyingListView" Path="SelectedItem.Duration" UpdateSourceTrigger="PropertyChanged"/>
+
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </GroupBox>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </StackPanel>
+    </Grid>
+
+</Window>
